@@ -1,0 +1,74 @@
+messages:
+  reports:
+    player:
+      header: '&e-- Report [player] [from] - [to] -- Page([page]/[maxPage])'
+      subhead: '&cOverall Activity: [overallActivity] Chat: [chat] Commands: [commands]'
+      row: '&6[joined] - [left] &cTotal Activity: [activity] Chat: [chat] Commands: [commands]'
+      noResults: '&cNo results found'
+      dates:
+        from: 'yyyy-MM-dd'
+        to: 'yyyy-MM-dd'
+        joined: 'yyyy-MM-dd HH:mm:ss'
+        left: 'yyyy-MM-dd HH:mm:ss'
+      durations:
+        overallActivity: "d'd' H'h' mm'm' s's'"
+        activity: "d'd' H'h' mm'm' s's'"
+
+    group:
+      header: '&e-- Inactive [type] [group] Report -- Page([page]/[maxPage])'
+      subhead: '&cMissing data for some, the following players may be very inactive: [players]'
+      row: '&6[[player]] &cTotal Activity: [activity] Chat: [chat] Commands: [commands]'
+      noResults: '&cNo results found'
+      durations:
+        activity: "d'd' H'h' mm'm' s's'"
+
+  sender:
+    error:
+      notFound: '&c[player] not found'
+      exception: '&cAn error occured whilst attempting to perform that command. Please check the console for the error'
+
+  player:
+    error:
+      inactive: '&cYou have not reached your target and have been marked as inactive'
+      demoted: '&cYou have not reached your target and have been demoted'
+
+  list:
+    online: '&a[displayName]'
+    offline: '&c[player]'
+    display:
+      allOnline: '&6Staff: [online]'
+      allOffline: '&6Staff: [offline]'
+      mixed: '&6Staff: [online], [offline]'
+
+  report:
+    error:
+      invalidDate: '&cInvalid date'
+      noReport: '&cNo generated report found for you'
+
+  inactive:
+    error:
+      invalidGroup: '[group] does not exist or inactivity is not enabled. Case sensitive.'
+      noReport: '&cNo generated report found for you'
+
+  demote:
+    success: '&a[player] has been demoted'
+
+  resign:
+    success: '&aYou have successfully resigned, thank you for the assistance'
+
+  sign:
+    offline:
+      seenFormat: 'd/M/yyyy HH:mm'
+      1: '&c[player]'
+      2: '&cOffline'
+      3: '&cSince'
+      4: '&c[seen]'
+    online:
+      1: '&a[player]'
+      2: '&aOnline'
+      3: ''
+      4: ''
+    created: '&aStaff sign created successfully which will update next time the player joins/leaves the server'
+
+  reload:
+    success: '&aStaffActivity reloaded successfully'

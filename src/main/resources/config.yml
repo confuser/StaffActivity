@@ -1,0 +1,57 @@
+# Command variables
+# [player]
+# [uuid]
+demoteCommands: # List of commands that are run when a player is demoted
+- 'pex user [uuid] group set default'
+- 'offline gamemode [player] 0'
+- 'offline fly [player] 0'
+- 'offline socialspy [player] 0'
+- 'mail [player] You have been demoted'
+
+resignCommands: # List of commands that are run when a player resigns
+- 'pex user [player] group set default'
+- 'gamemode 0 [player]'
+- 'fly [player] 0'
+- 'socialspy [player] 0'
+- 'mail SavannahF [player] has resigned'
+
+# Remove all data about the staff when they are demoted or resign
+removeActivity:
+  onDemote: true
+  onResign: true
+
+keepActivity: 60 # Number of activity days to keep within the database
+
+inactivity: # What is considered as inactive
+  Moderator: # Vault Group name
+    enabled: true
+    autoDemote: false # Automatically demote if they are inactive
+    type: 'weekly' # daily, weekly or monthly
+    notify:
+      # Notify the staff member if they become inactive
+      self: true
+      # Notify owners when a staff member becomes inactive
+      owners: true
+
+    # If you wish to disable a check, set it to 0
+    checks:
+      # Minimum number of messages sent (normal chat, not /msg)
+      chat: 100
+      # Minimum number of commands performed
+      commands: 50
+      # Minimum total activity time in seconds
+      time: 10800
+
+
+database:
+  enabled: false
+  host: 127.0.0.1
+  port: 3306
+  name: frostcast
+  user: frostcast
+  password: ''
+  maxConnections: 10
+  tables:
+    activities: sa_activities
+    sessions: sa_sessions
+    players: sa_players

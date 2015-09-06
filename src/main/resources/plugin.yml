@@ -1,0 +1,19 @@
+main: me.confuser.staffactivity.StaffActivity
+name: StaffActivity
+version: ${project.version}
+#website: http://dev.bukkit.org/bukkit-plugins/ban-management/
+authors: [ confuser ]
+depend: [ Vault ]
+softdepend: [ Essentials ]
+commands:
+  staff:
+    description: "List staff online"
+    usage: "/staff <subcommand>"
+    permission: staffactivity.command.list
+permissions:
+  staffactivity.log:
+    description: Logs player's activity
+    default: false
+  staffactivity.notify.inactive:
+    description: Notifies player of inactivity
+    default: false
