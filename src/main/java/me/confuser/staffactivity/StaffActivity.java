@@ -1,8 +1,10 @@
 package me.confuser.staffactivity;
 
-import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
+import com.j256.ormlite.jdbc.DataSourceConnectionSource;
 import com.j256.ormlite.logger.LocalLog;
+import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import me.confuser.bukkitutil.BukkitPlugin;
 import me.confuser.staffactivity.commands.StaffCommand;
@@ -29,28 +31,23 @@ public class StaffActivity extends BukkitPlugin {
 
   @Getter
   private static StaffActivity plugin;
-
+  @Getter
+  private static Chat chat = null;
   @Getter
   private DefaultConfig configuration;
   @Getter
   private SignsConfig signsConfig;
-
-  private JdbcPooledConnectionSource localConn;
-
+  private ConnectionSource localConn;
   @Getter
   private PlayerStorage playerStorage;
   @Getter
   private PlayerSessionStorage playerSessionStorage;
   @Getter
   private PlayerActivityStorage playerActivityStorage;
-
   @Getter
   private StaffManager staffManager;
   @Getter
   private SignManager signManager;
-
-  @Getter
-  private static Chat chat = null;
 
   @Override
   public void onEnable() {
@@ -151,37 +148,31 @@ public class StaffActivity extends BukkitPlugin {
   }
 
   public boolean setupConnections() throws SQLException {
-    DatabaseConfig localDb = configuration.getDatabaseConfig();
+    DatabaseConfig dbConfig = configuration.getDatabaseConfig();
 
-    if (!localDb.isEnabled()) {
+    if (!dbConfig.isEnabled()) {
       getLogger().warning("Local Database is not enabled, disabling plugin");
       plugin.getPluginLoader().disablePlugin(this);
       return false;
     }
 
-    localConn = new JdbcPooledConnectionSource(localDb.getJDBCUrl());
+    HikariDataSource ds = new HikariDataSource();
 
-    if (!localDb.getUser().isEmpty()) {
-      localConn.setUsername(localDb.getUser());
+    if (!dbConfig.getUser().isEmpty()) {
+      ds.setUsername(dbConfig.getUser());
     }
-    if (!localDb.getPassword().isEmpty()) {
-      localConn.setPassword(localDb.getPassword());
+    if (!dbConfig.getPassword().isEmpty()) {
+      ds.setPassword(dbConfig.getPassword());
     }
 
-    localConn.setMaxConnectionsFree(localDb.getMaxConnections());
-    /*
-     * There is a memory leak in ormlite-jbcd that means we should not use
-     * this. AutoReconnect handles this for us.
-     */
-    localConn.setTestBeforeGet(false);
-    /* Keep the connection open for 15 minutes */
-    localConn.setMaxConnectionAgeMillis(900000);
-    /*
-     * We should not use this. Auto reconnect does this for us. Waste of
-     * packets and CPU.
-     */
-    localConn.setCheckConnectionsEveryMillis(0);
-    localConn.initialize();
+    ds.setJdbcUrl(dbConfig.getJDBCUrl());
+    ds.setMaximumPoolSize(dbConfig.getMaxConnections());
+    ds.setLeakDetectionThreshold(2000);
+    ds.addDataSourceProperty("prepStmtCacheSize", "250");
+    ds.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+    ds.addDataSourceProperty("cachePrepStmts", "true");
+
+    localConn = new DataSourceConnectionSource(ds, dbConfig.getJDBCUrl());
 
     return true;
   }
