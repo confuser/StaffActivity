@@ -104,13 +104,9 @@ public class ReportSubCommand extends SubCommand<StaffActivity> {
           return;
         }
 
-        ActivityReport activityReport;
-
-        try {
-          activityReport = plugin.getPlayerSessionStorage().getReport(player, from, to);
-        } catch (SQLException e) {
+        ActivityReport activityReport = plugin.getPlayerSessionStorage().getReport(player, from, to);
+        if (activityReport == null) {
           sender.sendMessage(Message.get("sender.error.exception").toString());
-          e.printStackTrace();
           return;
         }
 

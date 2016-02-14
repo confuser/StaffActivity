@@ -80,13 +80,7 @@ public class JoinListener extends Listeners<StaffActivity> {
         if (inactiveConfig == null || !inactiveConfig.isEnabled()) return;
 
         if (inactiveConfig.isNotifySelf()) {
-          InactiveResult result;
-          try {
-            result = plugin.getPlayerSessionStorage().getInactivityResult(inactiveConfig, playerData);
-          } catch (SQLException e) {
-            e.printStackTrace();
-            return;
-          }
+          InactiveResult result = plugin.getPlayerSessionStorage().getInactivityResult(inactiveConfig, playerData);
 
           if (result == null) return;
 
@@ -125,15 +119,9 @@ public class JoinListener extends Listeners<StaffActivity> {
           if (!event.getPlayer().hasPermission("staffactivity.notify.inactive." + group.getName().replace(" ", ""))) {
             continue;
           }
-          InactiveReport report = null;
-          try {
-            report = plugin.getPlayerSessionStorage().getInactivityReport(group);
-          } catch (SQLException e) {
-            e.printStackTrace();
-            continue;
-          }
+          InactiveReport report = plugin.getPlayerSessionStorage().getInactivityReport(group);
 
-          if (!report.hasResults()) continue;
+          if (report == null || !report.hasResults()) continue;
 
           report.display(event.getPlayer(), 1);
         }

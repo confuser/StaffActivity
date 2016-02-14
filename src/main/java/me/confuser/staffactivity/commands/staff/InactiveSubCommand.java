@@ -8,7 +8,6 @@ import me.confuser.staffactivity.data.InactiveReport;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.command.CommandSender;
 
-import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InactiveSubCommand extends SubCommand<StaffActivity> {
@@ -50,19 +49,15 @@ public class InactiveSubCommand extends SubCommand<StaffActivity> {
 
       @Override
       public void run() {
-        InactiveReport report;
+        InactiveReport report = plugin.getPlayerSessionStorage().getInactivityReport(groupConfig);
 
-        try {
-          report = plugin.getPlayerSessionStorage().getInactivityReport(groupConfig);
-        } catch (SQLException e) {
+        if (report == null) {
           sender.sendMessage(Message.get("sender.error.exception").toString());
-          e.printStackTrace();
           return;
         }
 
         cache.put(sender.getName(), report);
         report.display(sender, 1);
-
       }
     });
 
