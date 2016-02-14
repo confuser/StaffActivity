@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class SignListener extends Listeners<StaffActivity> {
 
   @EventHandler(ignoreCancelled = true)
-  public void onSignChange(SignChangeEvent event) {
+  public void onSignChange(final SignChangeEvent event) {
     if (!event.getPlayer().hasPermission("staffactivity.sign.create")) return;
 
     BlockState state = event.getBlock().getState();
@@ -26,30 +26,45 @@ public class SignListener extends Listeners<StaffActivity> {
     if (!event.getLine(0).equalsIgnoreCase("[Staff]")) return;
     if (event.getLine(1) == null) return;
 
-    String name = event.getLine(1);
-    Sign sign = (Sign) state;
-    PlayerData player;
+    final String name = event.getLine(1);
+    final Sign sign = (Sign) state;
 
-    try {
-      player = plugin.getPlayerStorage().getByName(name);
-    } catch (SQLException e) {
-      event.getPlayer().sendMessage(Message.get("sender.error.exception").toString());
-      e.printStackTrace();
-      return;
-    }
 
-    if (player == null) {
-      Message.get("sender.error.notFound").set("player", name).sendTo(event.getPlayer());
-      return;
-    }
+    plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
-    event.setLine(1, player.getName());
-    sign.update(true);
+      @Override
+      public void run() {
+        final PlayerData player;
 
-    plugin.getSignManager().addSign(player, event.getBlock());
-    plugin.getSignManager().updateSigns(player, plugin.getStaffManager().isOnline(player.getUUID()));
+        try {
+          player = plugin.getPlayerStorage().getByName(name);
+        } catch (SQLException e) {
+          event.getPlayer().sendMessage(Message.get("sender.error.exception").toString());
+          e.printStackTrace();
+          return;
+        }
 
-    Message.get("sign.created").sendTo(event.getPlayer());
+        if (player == null) {
+          Message.get("sender.error.notFound").set("player", name).sendTo(event.getPlayer());
+          return;
+        }
+
+        plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
+
+          @Override
+          public void run() {
+            event.setLine(1, player.getName());
+            sign.update(true);
+
+            plugin.getSignManager().addSign(player, event.getBlock());
+            plugin.getSignManager().updateSigns(player, plugin.getStaffManager().isOnline(player.getUUID()));
+
+            Message.get("sign.created").sendTo(event.getPlayer());
+          }
+        });
+      }
+    });
+
   }
 
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
