@@ -68,7 +68,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>com.zaxxer.hikari</pattern>
-                                    <shadedPattern>me.confuser.banmanager.internal.hikari</shadedPattern>
+                                    <shadedPattern>me.confuser.staffactivity.internal.hikari</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
